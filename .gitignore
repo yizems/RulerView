@@ -1,5 +1,14 @@
+*.iml
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+### Android template
 # Built application files
-*.apk
 *.ap_
 
 # Files for the ART/Dalvik VM
@@ -33,8 +42,13 @@ proguard/
 captures/
 
 # Intellij
-*.iml
 .idea/workspace.xml
+.idea/tasks.xml
+.idea/libraries
+/.idea
 
 # Keystore files
 *.jks
+
+# External native build folder generated in Android Studio 2.2 and later
+

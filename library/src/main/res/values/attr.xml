@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--线颜色-->
+    <attr name="max_line_color" format="color" />
+    <attr name="mid_line_color" format="color" />
+    <attr name="min_line_color" format="color" />
+
+    <attr name="text_size" format="dimension" />
+
+    <attr name="text_color" format="color" />
+    <!--线的宽度-->
+    <attr name="line_width" format="dimension" />
+    <!--线的颜色-->
+    <attr name="line_space" format="dimension" />
+
+    <attr name="indicator_color" format="color" />
+
+    <attr name="indicator_size" format="dimension" />
+
+
+    <attr name="bottom_line_color" format="color" />
+
+    <declare-styleable name="RulerView">
+        <!--线颜色-->
+        <attr name="max_line_color" />
+        <attr name="mid_line_color" />
+        <attr name="min_line_color" />
+
+        <attr name="text_size" />
+
+        <attr name="text_color" />
+        <!--线的宽度-->
+        <attr name="line_width" />
+        <!--线的颜色-->
+        <attr name="line_space" />
+
+        <attr name="indicator_color" />
+
+        <attr name="indicator_size" />
+        <attr name="bottom_line_color" />
+
+    </declare-styleable>
+</resources>
