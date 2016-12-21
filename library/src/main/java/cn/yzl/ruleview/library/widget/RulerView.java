@@ -25,6 +25,11 @@ import cn.yzl.ruleview.library.utils.DensityUtils;
  */
 public class RulerView extends View {
 
+    /**
+     * 是否滑动过,用来过滤 finish事件
+     */
+    protected boolean isScrolled;
+
     private RulerListener listener;
     /**
      * 线的颜色
@@ -283,12 +288,13 @@ public class RulerView extends View {
             }
         }
 
-        if (!scroller.computeScrollOffset() && !fixScroller.computeScrollOffset()) {
+        if (scroller.isFinished() && fixScroller.isFinished()) {
             if (data != null) {
                 if (index <= data.size() - 1) {
-                    if (listener != null) {
+                    if (listener != null && isScrolled) {
                         listener.finish(index, data.get(index));
                         selPosition = index;
+                        isScrolled = false;
                     }
                 }
             }
@@ -380,6 +386,7 @@ public class RulerView extends View {
      * 开始平滑滚动
      */
     protected void startScroller() {
+        isScrolled = true;
         lastDef = 0;
         scroller.fling(0, velocityTracker.getXVelocity() > 0 ? 1 : 0,
                 Math.abs((int) velocityTracker.getXVelocity()), 0,

@@ -83,7 +83,7 @@ allprojects {
     }
 //module
  dependencies {
-           compile 'com.github.yizeliang:RulerView:1.0'
+           compile 'com.github.yizeliang:RulerView:1.1'
     }
 
 ```
