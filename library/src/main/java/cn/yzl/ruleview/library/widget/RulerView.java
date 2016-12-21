@@ -222,6 +222,8 @@ public class RulerView extends View {
     public void setSelPosition(int selPosition) {
         this.selPosition = selPosition;
         offsetX = -selPosition * (lineSpace + lineWidth);
+        scroller.forceFinished(true);
+        fixScroller.forceFinished(true);
         postInvalidate();
     }
 
