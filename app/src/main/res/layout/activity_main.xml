@@ -1,28 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <cn.yzl.ruleview.library.widget.RulerView
-        app:bottom_line_color="#123439"
-        app:line_space="10dp"
-        app:line_width="2dp"
-        app:max_line_color="#303F9F"
-        app:mid_line_color="#17E5A7"
-        app:min_line_color="#E3E3E3"
-        app:indicator_color="#DB6958"
-        app:indicator_size="2dp"
-        app:text_size="15sp"
-        app:text_color="@color/colorAccent"
+    app:base_line_color="#123439"
+    app:line_space="10dp"
+    app:line_width="2dp"
+    app:max_line_color="#303F9F"
+    app:mid_line_color="#17E5A7"
+    app:min_line_color="#E3E3E3"
+    app:indicator_color="#DB6958"
+    app:indicator_size="2dp"
+    app:text_size="15sp"
+    app:text_color="@color/colorAccent"
 
-        android:id="@+id/ruler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp" />
+    app:base_line_height="1px"
+
+    app:base_line_gravity="top"
+
+    app:text_gravity="top"
+
+    app:line_gravity="top"
+
+    app:show_base_line="true"
+
+    app:max_line_count="10"
+    app:mid_line_count="5"
+    android:id="@+id/ruler"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="20dp" />
 
 
     <TextView
@@ -38,5 +50,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="选择位置,第10个" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="默认效果" />
+
+    <cn.yzl.ruleview.library.widget.RulerView
+        android:id="@+id/ruler2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp" />
 
 </LinearLayout>

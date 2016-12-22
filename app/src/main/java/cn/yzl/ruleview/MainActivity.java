@@ -15,8 +15,7 @@ import cn.yzl.ruleview.library.widget.RulerView;
 
 public class MainActivity extends AppCompatActivity {
 
-
-    private RulerView rulerView;
+    private RulerView rulerView,rulerView2;
 
     private Button but;
     private TextView tv;
@@ -26,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         rulerView = (RulerView) findViewById(R.id.ruler);
-
+        rulerView2= (RulerView) findViewById(R.id.ruler2);
         tv = (TextView) findViewById(R.id.tv);
         but = (Button) findViewById(R.id.but);
         but.setOnClickListener(new View.OnClickListener() {
@@ -45,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void finish(int position, String content) {
                 tv.setText(content);
-                Toast.makeText(MainActivity.this, "滑动结束", 1).show();
+                ToastUtils.showShort(MainActivity.this, "滑动结束");
             }
         });
 
@@ -55,5 +54,6 @@ public class MainActivity extends AppCompatActivity {
             data.add(String.valueOf(i * 100));
         }
         rulerView.setData(data);
+        rulerView2.setData(data);
     }
 }

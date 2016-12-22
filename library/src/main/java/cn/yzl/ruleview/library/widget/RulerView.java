@@ -38,6 +38,9 @@ public class RulerView extends View {
     protected int minLineColor;
     protected int midLineColor;
 
+
+    protected int lineGravity;
+
     /**
      * 线的粗细
      */
@@ -82,6 +85,9 @@ public class RulerView extends View {
 
     protected int textColor;
 
+    protected int textGravity;
+
+
     /**
      * 指示器
      */
@@ -89,13 +95,25 @@ public class RulerView extends View {
 
     protected int indicatorColor;
 
-    protected int bottomLineColor;
+    /**
+     * 基线
+     */
+    protected int baseLineColor;
 
+    protected int baseLineHeight;
+
+    protected int baseLineGravity;
+
+    protected boolean showBaseLine;
 
     /**
      * 0的时候的线X坐标
      */
     protected int baseX;
+
+    protected int maxLineCount;
+
+    protected int midLineCount;
 
     /**
      * 当前偏移X坐标
@@ -129,14 +147,27 @@ public class RulerView extends View {
 
         lineSpace = (int) typedArray.getDimension(R.styleable.RulerView_line_space, DensityUtils.dp2px(context, 10));
 
+        lineGravity = typedArray.getInt(R.styleable.RulerView_line_gravity, 2);
+
         textSize = (int) typedArray.getDimension(R.styleable.RulerView_text_size, DensityUtils.dp2px(context, 18));
 
         textColor = typedArray.getColor(R.styleable.RulerView_text_color, Color.parseColor("#111111"));
 
+        textGravity = typedArray.getInt(R.styleable.RulerView_text_gravity, 0);
+
         indicatorColor = typedArray.getColor(R.styleable.RulerView_indicator_color, Color.parseColor("#D62B20"));
         indicatorSize = (int) typedArray.getDimension(R.styleable.RulerView_indicator_size, DensityUtils.dp2px(context, 2));
 
-        bottomLineColor = typedArray.getColor(R.styleable.RulerView_bottom_line_color, Color.parseColor("#9B9B9B"));
+        baseLineColor = typedArray.getColor(R.styleable.RulerView_base_line_color, Color.parseColor("#9B9B9B"));
+
+        baseLineHeight = (int) typedArray.getDimension(R.styleable.RulerView_base_line_height, DensityUtils.dp2px(context, 2));
+
+        baseLineGravity = typedArray.getInt(R.styleable.RulerView_base_line_gravity, 2);
+
+        showBaseLine = typedArray.getBoolean(R.styleable.RulerView_show_base_line, true);
+
+        maxLineCount = typedArray.getInt(R.styleable.RulerView_max_line_count, 10);
+        midLineCount = typedArray.getInt(R.styleable.RulerView_mid_line_count, 5);
 
         typedArray.recycle();
     }
@@ -182,9 +213,9 @@ public class RulerView extends View {
         bottomLinePaint = new Paint();
 
         bottomLinePaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        bottomLinePaint.setStrokeWidth(DensityUtils.dp2px(getContext(), 2));
+        bottomLinePaint.setStrokeWidth(baseLineHeight);
         bottomLinePaint.setAntiAlias(true);
-        bottomLinePaint.setColor(bottomLineColor);
+        bottomLinePaint.setColor(baseLineColor);
 
         textPaint = new Paint();
 
@@ -227,6 +258,83 @@ public class RulerView extends View {
         postInvalidate();
     }
 
+
+    protected int baseLineStartY;
+    protected int minLineStartY;
+    protected int midLineStartY;
+    protected int maxLineStartY;
+    protected int textStartY;
+
+    /**
+     * 根据属性计算 文字基线位置,各个刻度位置,绘制的 Y 坐标位置,计算后直接请求重绘
+     */
+    protected void computeYPostion() {
+        if (textGravity == 0) {//文字在上面
+            textStartY = textSize;
+            maxLineStartY = getMeasuredHeight() - maxLineHeight;
+
+            switch (lineGravity) {
+                case 0:
+                    midLineStartY = getMeasuredHeight() - maxLineHeight;
+                    minLineStartY = getMeasuredHeight() - maxLineHeight;
+                    break;
+                case 1:
+                    midLineStartY = getMeasuredHeight() - maxLineHeight / 2 - midLineHeight / 2;
+                    minLineStartY = getMeasuredHeight() - maxLineHeight / 2 - minLineHeight / 2;
+                    break;
+                case 2:
+                    midLineStartY = getMeasuredHeight() - midLineHeight;
+                    minLineStartY = getMeasuredHeight() - minLineHeight;
+                    break;
+            }
+
+            switch (baseLineGravity) {
+                case 0:
+                    baseLineStartY = getMeasuredHeight() - maxLineHeight;
+                    break;
+                case 1:
+                    baseLineStartY = getMeasuredHeight() - maxLineHeight / 2;
+                    break;
+                case 2:
+                    baseLineStartY = getMeasuredHeight();
+                    break;
+            }
+
+        } else {//文字在下面
+            textStartY = getMeasuredHeight();
+
+            maxLineStartY = 0;
+
+            switch (lineGravity) {
+                case 0:
+                    midLineStartY = 0;
+                    minLineStartY = 0;
+                    break;
+                case 1:
+                    midLineStartY = maxLineHeight / 2 - midLineHeight / 2;
+                    minLineStartY = maxLineHeight / 2 - minLineHeight / 2;
+                    break;
+                case 2:
+                    midLineStartY = maxLineHeight;
+                    minLineStartY = maxLineHeight;
+                    break;
+            }
+
+            switch (baseLineGravity) {
+                case 0:
+                    baseLineStartY = 0;
+                    break;
+                case 1:
+                    baseLineStartY = maxLineHeight / 2;
+                    break;
+                case 2:
+                    baseLineStartY = maxLineHeight;
+                    break;
+            }
+        }
+        postInvalidate();
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -241,6 +349,7 @@ public class RulerView extends View {
         }
 
         for (int i = 0; i <= lineCount; i++) {
+
             float startX = baseX + i * (lineSpace + lineWidth) + offsetX;
 
             if (startX < 0) {
@@ -251,28 +360,31 @@ public class RulerView extends View {
                 break;
             }
 
-            if (i % 10 == 0) {
-                canvas.drawLine(startX, getMeasuredHeight() - maxLineHeight,
-                        startX, getMeasuredHeight(), maxPaint);
-                if (data != null && i < data.size() - 1) {
+            if (i % maxLineCount == 0) {
+                canvas.drawLine(startX, maxLineStartY,
+                        startX, maxLineStartY + maxLineHeight, maxPaint);
+                if (data != null && i < data.size()) {
                     float width = textPaint.measureText(data.get(i));
-                    canvas.drawText(data.get(i), startX - width / 2, textBaseY, textPaint);
+                    canvas.drawText(data.get(i), startX - width / 2, textStartY, textPaint);
                 }
 
-            } else if (i % 5 == 0) {
-                canvas.drawLine(startX, getMeasuredHeight() - midLineHeight,
-                        startX, getMeasuredHeight(), midPaint);
+            } else if (i % midLineCount == 0) {
+                canvas.drawLine(startX, midLineStartY,
+                        startX, midLineStartY + midLineHeight, midPaint);
             } else {
-                canvas.drawLine(startX, getMeasuredHeight() - minLineHeight,
-                        startX, getMeasuredHeight(), minPaint);
+                canvas.drawLine(startX, minLineStartY,
+                        startX, minLineStartY + minLineHeight, minPaint);
             }
 
         }
 
-        {//绘制下面的线
-            canvas.drawLine(0, getMeasuredHeight() - lineWidth / 2,
-                    getMeasuredWidth(), getMeasuredHeight() - lineWidth / 2, bottomLinePaint);
+        if (showBaseLine) {
+            {//绘制基线
+                canvas.drawLine(0, baseLineStartY - baseLineHeight / 2,
+                        getMeasuredWidth(), baseLineStartY + baseLineHeight / 2, bottomLinePaint);
+            }
         }
+
 
         {//绘制指示器
             canvas.drawLine(getMeasuredWidth() / 2 - lineWidth / 2, 0,
@@ -337,6 +449,7 @@ public class RulerView extends View {
         maxLineHeight = (i - textSize) / 6 * 5;
         midLineHeight = (i - textSize) / 6 * 4;
         minLineHeight = (i - textSize) / 6 * 3;
+        computeYPostion();
     }
 
     protected float lastX = 0;
@@ -455,5 +568,151 @@ public class RulerView extends View {
 
     public void setListener(RulerListener listener) {
         this.listener = listener;
+    }
+
+    //----------------------------Get/Set method------------还没有处理-----------------------
+
+    public int getLineGravity() {
+        return lineGravity;
+    }
+
+    public void setLineGravity(int lineGravity) {
+        this.lineGravity = lineGravity;
+        computeYPostion();
+    }
+
+    public int getTextGravity() {
+        return textGravity;
+    }
+
+    public void setTextGravity(int textGravity) {
+        this.textGravity = textGravity;
+        computeYPostion();
+    }
+
+    public int getBaseLineColor() {
+        return baseLineColor;
+    }
+
+    public void setBaseLineColor(int baseLineColor) {
+        this.baseLineColor = baseLineColor;
+        computeYPostion();
+    }
+
+    public int getBaseLineHeight() {
+        return baseLineHeight;
+    }
+
+    public void setBaseLineHeight(int baseLineHeight) {
+        this.baseLineHeight = baseLineHeight;
+        computeYPostion();
+    }
+
+    public int getBaseLineGravity() {
+        return baseLineGravity;
+    }
+
+    public void setBaseLineGravity(int baseLineGravity) {
+        this.baseLineGravity = baseLineGravity;
+        computeYPostion();
+    }
+
+    public int getTextSize() {
+        return textSize;
+    }
+
+    public void setTextSize(int textSize) {
+        this.textSize = textSize;
+        computeYPostion();
+    }
+
+    public int getTextColor() {
+        return textColor;
+    }
+
+    public void setTextColor(int textColor) {
+        this.textColor = textColor;
+        computeYPostion();
+    }
+
+    public int getIndicatorSize() {
+        return indicatorSize;
+    }
+
+    public void setIndicatorSize(int indicatorSize) {
+        this.indicatorSize = indicatorSize;
+        computeYPostion();
+    }
+
+    public int getIndicatorColor() {
+        return indicatorColor;
+    }
+
+    public void setIndicatorColor(int indicatorColor) {
+        this.indicatorColor = indicatorColor;
+        computeYPostion();
+    }
+
+    public boolean isShowBaseLine() {
+        return showBaseLine;
+    }
+
+    public void setShowBaseLine(boolean showBaseLine) {
+        this.showBaseLine = showBaseLine;
+        computeYPostion();
+    }
+
+    public int getLineCount() {
+        return lineCount;
+    }
+
+    public void setLineCount(int lineCount) {
+        this.lineCount = lineCount;
+        computeYPostion();
+    }
+
+    public int getLineSpace() {
+        return lineSpace;
+    }
+
+    public void setLineSpace(int lineSpace) {
+        this.lineSpace = lineSpace;
+        computeYPostion();
+    }
+
+    public int getLineWidth() {
+        return lineWidth;
+    }
+
+    public void setLineWidth(int lineWidth) {
+        this.lineWidth = lineWidth;
+        computeYPostion();
+    }
+
+    public int getMaxLineColor() {
+        return maxLineColor;
+    }
+
+    public void setMaxLineColor(int maxLineColor) {
+        this.maxLineColor = maxLineColor;
+        computeYPostion();
+    }
+
+    public int getMinLineColor() {
+        return minLineColor;
+    }
+
+    public void setMinLineColor(int minLineColor) {
+        this.minLineColor = minLineColor;
+        computeYPostion();
+    }
+
+    public int getMidLineColor() {
+        return midLineColor;
+    }
+
+    public void setMidLineColor(int midLineColor) {
+        this.midLineColor = midLineColor;
+        computeYPostion();
     }
 }
