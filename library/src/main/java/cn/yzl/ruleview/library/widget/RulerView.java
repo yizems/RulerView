@@ -715,4 +715,22 @@ public class RulerView extends View {
         this.midLineColor = midLineColor;
         computeYPostion();
     }
+
+    public int getMaxLineCount() {
+        return maxLineCount;
+    }
+
+    public void setMaxLineCount(int maxLineCount) {
+        this.maxLineCount = maxLineCount;
+        computeYPostion();
+    }
+
+    public int getMidLineCount() {
+        return midLineCount;
+    }
+
+    public void setMidLineCount(int midLineCount) {
+        this.midLineCount = midLineCount;
+        computeYPostion();
+    }
 }

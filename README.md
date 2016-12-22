@@ -112,12 +112,17 @@ allprojects {
     }
 //module
  dependencies {
-           compile 'com.github.yizeliang:RulerView:1.3'
+           compile 'com.github.yizeliang:RulerView:1.4'
     }
 
 ```
 
 ## 5更新日志
+
+### 1.4版本
+
+- 修改版本号
+- 加入 设置数量方法
 
 ### 1.3版本
 
