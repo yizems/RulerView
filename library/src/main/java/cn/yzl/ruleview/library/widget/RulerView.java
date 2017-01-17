@@ -124,7 +124,10 @@ public class RulerView extends View {
 
     protected List<String> data;
 
-
+    /**
+     * 是否可以滑动
+     */
+    protected boolean scrollEnable = true;
     /**
      * 速率计算器
      */
@@ -456,6 +459,12 @@ public class RulerView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
+        //不可滑动就不再处理滑动事件
+        if (!scrollEnable) {
+            return true;
+        }
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 scroller.forceFinished(true);
@@ -732,5 +741,13 @@ public class RulerView extends View {
     public void setMidLineCount(int midLineCount) {
         this.midLineCount = midLineCount;
         computeYPostion();
+    }
+
+    public boolean isScrollEnable() {
+        return scrollEnable;
+    }
+
+    public void setScrollEnable(boolean scrollEnable) {
+        this.scrollEnable = scrollEnable;
     }
 }
