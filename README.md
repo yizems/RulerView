@@ -1,7 +1,7 @@
 # RulerView
 米尺选择器-横向-常用语金额选择
 
-## 1 效果图
+## 1 效果图 [![](https://jitpack.io/v/yizeliang/RulerView.svg)](https://jitpack.io/#yizeliang/RulerView)
 ![image](https://github.com/yizeliang/RulerView/raw/master/img/1.png)
 
 ![image](https://github.com/yizeliang/RulerView/raw/master/img/2.png)
